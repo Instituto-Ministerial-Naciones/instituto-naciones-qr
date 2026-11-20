@@ -1,4 +1,4 @@
-const CACHE_NAME = 'naciones-qr-v1';
+const CACHE_NAME = 'naciones-qr-v2-sin-pin';
 const APP_SHELL = [
   './',
   './index.html',

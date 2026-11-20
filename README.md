@@ -1,75 +1,73 @@
-# Instituto Ministerial Naciones — Lector QR
+# Instituto Ministerial Naciones — Lector QR (sin PIN)
 
-Aplicación web instalable (PWA) para leer códigos QR y registrar automáticamente el número de registro y la fecha/hora en la pestaña **G45** de Google Sheets.
+Aplicación web instalable (PWA) para escanear códigos QR y registrar automáticamente el número de registro y la fecha/hora en la pestaña **G45** de Google Sheets.
 
-## Qué hace
+## Incluye
 
-- Abre la cámara trasera del teléfono y lee códigos QR continuamente.
-- No pide confirmar cada lectura: al reconocer un código, lo envía automáticamente.
-- Busca el código en la columna que tenga un encabezado relacionado con **Registro** (si no lo detecta, usa la columna A; se puede fijar manualmente).
-- Escribe el código de registro en la columna **X** y la fecha/hora en la columna **Y**, en la misma fila del registro.
-- Evita registrar dos veces a la misma persona el mismo día. Si ya existe un registro en Y para el día actual, muestra que ya estaba registrado y conserva la primera hora.
-- Abre directamente el lector, sin PIN ni pantalla de acceso.
-- Puede instalarse desde el navegador como aplicación en Android y iPhone.
+- Escaneo continuo con la cámara trasera del teléfono.
+- Sin PIN, contraseña ni inicio de sesión.
+- No hay botón de confirmación por cada lectura: reconoce el QR y envía el registro automáticamente.
+- Escribe el número de registro en **X** y la fecha/hora en **Y**, en la misma fila de la persona encontrada.
+- Evita sobrescribir un registro si la misma persona vuelve a escanear el mismo día.
+- Instalable en Android y iPhone desde el navegador.
+- URL de Apps Script ya cargada en `config.js`.
 
-## 1. Configurar Google Apps Script
+## Importante: actualizar la implementación de Apps Script
 
-1. Abre [script.google.com](https://script.google.com/) e inicia un proyecto nuevo.
-2. Abre `apps-script/Code.gs` de este repositorio y copia todo su contenido en el archivo `Code.gs` del proyecto.
-3. En la sección `CONFIG`, verifica que `SPREADSHEET_ID` corresponda a tu hoja y que `SHEET_NAME` sea `G45` (ya están precargados).
-5. Revisa `REGISTRATION_COLUMN`:
-   - `0`: intenta detectar el encabezado de la columna (por ejemplo, `# Registro`, `Registro`, `No. de registro`). Si no lo detecta, toma la columna A.
-   - Si sabes que el número está en otra columna, escribe su número: A=1, B=2, C=3, etc.
-6. Guarda el proyecto.
-7. En el selector de funciones, ejecuta `testConnection` y autoriza los permisos solicitados. En los registros de ejecución debe aparecer la conexión correcta y el número de columna detectada.
-8. Ve a **Implementar → Nueva implementación → Aplicación web**.
-   - **Ejecutar como:** Yo.
-   - **Quién tiene acceso:** Cualquier persona.
-   - Implementa y copia la URL que termina en `/exec`.
+La URL proporcionada estaba implementada con la versión anterior que pedía PIN. Para que esta versión funcione sin PIN, primero hay que actualizar el código del mismo proyecto de Apps Script:
 
-> La implementación como “Cualquier persona” permite que la PWA escriba desde los teléfonos sin pedirles acceso a la cuenta propietaria. La hoja seguirá siendo administrada por la cuenta que despliega Apps Script. **No hay PIN ni autenticación en la app:** cualquier persona que tenga la URL pública del lector podría enviar registros. Mantén la URL fuera de publicaciones públicas y restringe el acceso compartiendo el enlace solo con el equipo.
+1. Abre el proyecto de Apps Script que generó esta URL: `https://script.google.com/`.
+2. Abre el archivo `Code.gs`.
+3. Reemplaza todo su contenido por el archivo `apps-script/Code.gs` incluido en este paquete.
+4. Guarda los cambios.
+5. Ve a **Implementar → Administrar implementaciones**.
+6. En la implementación existente, pulsa el lápiz **Editar**.
+7. En **Versión**, elige **Nueva versión** y pulsa **Implementar**.
+8. Conserva la URL `/exec` existente. Es la que ya está escrita en `config.js`.
+9. Ejecuta manualmente `testConnection` desde el editor y autoriza el acceso, si aún no lo habías hecho. Revisa el registro de ejecución: debe mostrar la pestaña G45 y la columna que detectó para el número de registro.
 
-## 2. Conectar la app con Apps Script
+> Si Google te entrega una URL `/exec` distinta, actualiza `API_URL` en `config.js` con esa nueva dirección.
 
-1. Abre `config.js` en la raíz del proyecto.
-2. Sustituye `PEGA_AQUI_LA_URL_DE_IMPLEMENTACION_DE_APPS_SCRIPT` por la URL `/exec` que acabas de copiar.
-3. Guarda el archivo. La app abre directamente el lector, sin pedir clave.
+## Configuración de la hoja
 
-## 3. Publicar en GitHub Pages
+El script ya está configurado con:
 
-1. Crea un repositorio nuevo en GitHub, por ejemplo `instituto-naciones-qr`.
-2. Sube el contenido de esta carpeta a la raíz del repositorio (no subas la carpeta contenedora, sino los archivos y carpetas que están dentro).
-3. En GitHub abre **Settings → Pages**.
-4. En **Build and deployment**, selecciona **Deploy from a branch**, rama `main`, carpeta `/ (root)` y guarda.
-5. Espera a que GitHub Pages muestre la URL pública del sitio. Debe abrirse con `https://`.
+- ID de hoja: `1Bluv6D7Ox5pCReTmngW0ng66s_BYOPWBXadqNf6qXSk`
+- Pestaña: `G45`
+- Columna X: número/código de registro
+- Columna Y: fecha y hora
+- Zona horaria de registro: `America/Mexico_City`
 
-## 4. Instalar en teléfonos
+El script busca un encabezado como `Registro`, `# Registro`, `Matrícula`, `Folio` o `Inscripción` en la fila 1. Si no detecta un encabezado único, usa la columna A como respaldo. **Antes de usarlo en una reunión, ejecuta `testConnection` y confirma que la columna detectada sea realmente la que contiene el número de registro.** Si no es así, cambia `REGISTRATION_COLUMN` en `apps-script/Code.gs` (A=1, B=2, C=3...) y vuelve a crear una nueva versión de la implementación.
 
-- **Android:** abre el enlace de GitHub Pages en Chrome, toca el menú y elige **Instalar aplicación** o **Agregar a pantalla principal**.
-- **iPhone:** abre el enlace en Safari, toca **Compartir → Agregar a pantalla de inicio**.
-- Abre la app y toca **Activar cámara** para conceder permiso de cámara. Después, cada QR válido se registra automáticamente, sin confirmación individual.
+## Subir a GitHub Pages
 
-## Comportamiento de las columnas
+1. Descomprime este ZIP.
+2. Crea un repositorio nuevo en GitHub, por ejemplo `instituto-naciones-qr`.
+3. En el repositorio, selecciona **Add file → Upload files**.
+4. Arrastra el contenido de esta carpeta (archivos y carpetas `assets` y `apps-script`) directamente a la raíz del repositorio. No subas una carpeta contenedora adicional. `index.html` debe quedar visible en la raíz.
+5. Pulsa **Commit changes**.
+6. Entra a **Settings → Pages**.
+7. En **Build and deployment**, selecciona **Deploy from a branch**, rama `main`, carpeta `/ (root)` y guarda.
+8. Abre la URL HTTPS que GitHub Pages genere.
 
-| Columna | Contenido |
-|---|---|
-| X | Código / número de registro encontrado en la fila |
-| Y | Fecha y hora del primer escaneo del día (`dd/MM/yyyy HH:mm:ss`) |
+## Instalar en teléfonos
 
-La aplicación busca una coincidencia exacta del código leído contra la columna de registro configurada. Si el mismo QR se escanea de nuevo el mismo día, no sobrescribe la hora original. Al cambiar de día, un nuevo escaneo actualiza X/Y con la fecha/hora del día nuevo.
+- **Android:** abre la URL en Chrome, abre el menú y elige **Instalar aplicación** o **Agregar a pantalla principal**.
+- **iPhone:** abre la URL en Safari, toca **Compartir → Agregar a pantalla de inicio**.
 
-## Ajustes habituales
+Al abrirla, pulsa **Activar cámara** y concede el permiso. Ese toque inicial es necesario para que el navegador permita usar la cámara. Después, cada código QR se registra automáticamente, sin confirmación.
 
-En `apps-script/Code.gs`, dentro de `CONFIG`:
+## Comportamiento de duplicados
 
-- `REGISTRATION_COLUMN`: fija la columna donde está el número de registro si la detección por encabezado no coincide.
-- `HEADER_ROW`: cambia el número de fila si los encabezados no están en la fila 1.
-- `TIMEZONE`: zona horaria usada para determinar si el registro ya se hizo hoy.
+Si la columna Y ya contiene un registro de la misma fecha local, la app informa que la persona ya estaba registrada y conserva su primera hora. Si el último registro es de otro día, actualiza X/Y con el escaneo nuevo.
 
-## Notas importantes
+## Seguridad y privacidad
 
-- La cámara del navegador requiere HTTPS. GitHub Pages proporciona HTTPS.
-- La lectura QR usa `html5-qrcode` desde un CDN; para cargar esa librería se requiere internet.
-- El envío a Google Apps Script requiere conexión a internet. Si se pierde la conexión durante un escaneo, la aplicación mostrará que no pudo confirmar el registro; vuelve a escanear cuando regrese la conexión.
-- La PWA guarda la interfaz básica en caché, pero el escaneo y el guardado necesitan conexión.
-- Si modificas `Code.gs` después de implementar, crea una nueva versión desde **Implementar → Administrar implementaciones → Editar → Nueva versión**.
+Esta versión no usa PIN. Como el acceso de Apps Script debe configurarse como **Cualquier persona** para que los teléfonos puedan escribir sin iniciar sesión, cualquier persona que consiga la URL pública de Apps Script podría intentar enviar registros. No publiques esa URL y compártela solo con el equipo de confianza. No hay autenticación individual en esta versión.
+
+## Requisitos
+
+- GitHub Pages por HTTPS (la cámara del navegador requiere contexto seguro).
+- Internet durante el escaneo y el guardado.
+- La librería de cámara `html5-qrcode` se carga desde CDN; requiere conexión para descargarse.

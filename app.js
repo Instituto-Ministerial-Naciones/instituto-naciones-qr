@@ -3,12 +3,10 @@
 
   const config = window.APP_CONFIG || {};
   const API_URL = String(config.API_URL || '').trim();
-  const STORAGE_COUNT = 'naciones_qr_session_count_v1';
-  const STORAGE_LAST_TIME = 'naciones_qr_session_last_time_v1';
-
+  const STORAGE_COUNT = 'naciones_qr_session_count_v2';
+  const STORAGE_LAST_TIME = 'naciones_qr_session_last_time_v2';
   const el = (id) => document.getElementById(id);
   const startButton = el('start-button');
-  const readerElement = el('reader');
   const cameraFrame = el('camera-frame');
   const cameraPlaceholder = el('camera-placeholder');
   const cameraActions = el('camera-actions');
@@ -91,15 +89,15 @@
       }
       const lastPart = url.pathname.split('/').filter(Boolean).pop();
       if (lastPart) return decodeURIComponent(lastPart).trim();
-    } catch (_) { /* El QR contiene texto plano, no una URL. */ }
+    } catch (_) { /* El QR contiene texto plano. */ }
     const labelled = raw.match(/(?:#?\s*registro|folio|c[oó]digo|matr[ií]cula)\s*[:#-]?\s*([A-Za-z0-9_-]+)/i);
     return labelled ? labelled[1] : raw;
   }
 
   function jsonp(params, timeoutMs = 15000) {
     return new Promise((resolve, reject) => {
-      if (!API_URL || !/^https:\/\//i.test(API_URL) || API_URL.includes('PEGA_AQUI')) {
-        reject(new Error('Falta configurar la URL de Google Apps Script en config.js.'));
+      if (!API_URL || !/^https:\/\//i.test(API_URL)) {
+        reject(new Error('La URL de Google Apps Script no está configurada correctamente.'));
         return;
       }
       const callbackName = `nacionesQrCallback_${Date.now()}_${++scriptCounter}`;
@@ -111,10 +109,7 @@
         delete window[callbackName];
         script.remove();
       };
-      window[callbackName] = (payload) => {
-        cleanup();
-        resolve(payload);
-      };
+      window[callbackName] = (payload) => { cleanup(); resolve(payload); };
       script.onerror = () => {
         cleanup();
         reject(new Error('No se pudo conectar con Google Sheets. Revisa la conexión e intenta de nuevo.'));
@@ -199,10 +194,10 @@
       scannerRunning = true;
       setScanning(true);
       cameraActions.classList.add('hidden');
-      showResult('', 'Listo para escanear', 'Acerca un código QR al recuadro.');
+      showResult('', 'Listo para escanear', 'Cada código válido se registra automáticamente.');
     } catch (error) {
       const text = error && error.message ? error.message : String(error);
-      showResult('error', 'No se pudo abrir la cámara', text.includes('Permission') ? 'Permite el acceso a la cámara desde los ajustes del navegador.' : text);
+      showResult('error', 'No se pudo abrir la cámara', text.toLowerCase().includes('permission') ? 'Permite el acceso a la cámara desde los ajustes del navegador.' : text);
       startButton.disabled = false;
       startButton.querySelector('span').textContent = 'Intentar de nuevo';
       setConnection('error', 'Cámara no disponible');
@@ -220,24 +215,20 @@
   }
 
   startButton.addEventListener('click', startScanner);
-  window.addEventListener('online', () => setConnection(scannerRunning ? 'online' : 'waiting', navigator.onLine ? 'Conexión disponible' : 'Sin conexión'));
+  window.addEventListener('online', () => setConnection(scannerRunning ? 'online' : 'waiting', 'Conexión disponible'));
   window.addEventListener('offline', () => setConnection('error', 'Sin conexión'));
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && scannerRunning) stopScanner();
-  });
-  window.addEventListener('pagehide', () => {
-    if (scannerRunning && scanner) scanner.stop().catch(() => {});
-  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && scannerRunning) stopScanner(); });
+  window.addEventListener('pagehide', () => { if (scannerRunning && scanner) scanner.stop().catch(() => {}); });
 
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
   }
 
-  if (!API_URL || API_URL.includes('PEGA_AQUI')) {
+  if (!API_URL || !/^https:\/\//i.test(API_URL)) {
     setConnection('error', 'Falta configurar API');
-    showResult('error', 'Configuración pendiente', 'Pega la URL de Apps Script en el archivo config.js.');
+    showResult('error', 'Configuración pendiente', 'Revisa la URL de Apps Script en config.js.');
   } else {
-    setConnection(navigator.onLine ? 'online' : 'error', navigator.onLine ? 'Conexión disponible' : 'Sin conexión');
-    showResult('', 'Listo para escanear', 'Activa la cámara para comenzar.');
+    setConnection(navigator.onLine ? 'waiting' : 'error', navigator.onLine ? 'Conexión lista' : 'Sin conexión');
+    showResult('', 'Listo para comenzar', 'Activa la cámara para iniciar el escaneo automático.');
   }
 })();

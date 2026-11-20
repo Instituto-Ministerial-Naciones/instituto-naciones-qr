@@ -1,25 +1,15 @@
 {
-  "name": "Instituto Ministerial Naciones | Registro QR",
+  "name": "Instituto Ministerial Naciones | Registro de asistencia",
   "short_name": "Naciones QR",
-  "description": "Lector de códigos QR para el registro del Instituto Ministerial Naciones.",
+  "description": "Escáner QR para el registro de asistencia del Instituto Ministerial Naciones.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f1ead5",
-  "theme_color": "#f1ead5",
+  "background_color": "#f8f8f8",
+  "theme_color": "#005b92",
   "icons": [
-    {
-      "src": "assets/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "assets/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

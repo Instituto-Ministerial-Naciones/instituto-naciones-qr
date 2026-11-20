@@ -21,7 +21,7 @@ body {
 
 .topbar {
   width: 100%;
-  height: clamp(39px, 12.78vw, 138px);
+  height: clamp(82px, 12.78vw, 138px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,7 +29,7 @@ body {
 }
 .brand-mark {
   display: block;
-  width: clamp(27px, 7.5vw, 82px);
+  width: clamp(48px, 7.5vw, 82px);
   height: auto;
   object-fit: contain;
 }

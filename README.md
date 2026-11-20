@@ -1,49 +1,33 @@
-# Instituto Naciones — Registro QR (diseño exacto de referencia)
+# Instituto Ministerial Naciones — Lector QR
 
-Esta versión copia la composición de la imagen de referencia enviada: franja superior azul con el símbolo blanco centrado, fondo blanco, visor cuadrado gris con cuatro esquinas, campo `NOMBRE`, campo `PASE PARA:` y botón azul `REGISTRAR ASISTENCIA`.
+Versión con el diseño solicitado (barra azul, símbolo blanco, visor, nombre, pase para y botón azul), conexión a Google Apps Script y favicons reforzados.
 
-## Funcionalidad
+## Actualización en GitHub Pages
 
-- El botón activa o detiene la cámara trasera.
-- Cuando el lector detecta un QR, envía el código automáticamente; no hay que confirmar cada lectura.
-- Google Apps Script busca el número de registro en la pestaña G45.
-- Escribe el número en X y la fecha/hora en Y, en la misma fila.
-- Evita guardar de nuevo a la misma persona el mismo día.
-- Intenta obtener el nombre y el número de personas leyendo encabezados de la fila 1. Reconoce nombres como `Nombre`, `Nombre completo`, `Nombre y apellidos`, `Nombre(s)`, `Apellido paterno`, `Apellido materno`, `Pase para`, `Personas`, `Número de personas`, `Acompañantes`, `Boletos` o `Pases`. Si no localiza esos encabezados, la pantalla conserva los valores de ejemplo `NOMBRE COMPLETO` y `0 PERSONAS`.
-- No solicita PIN ni contraseña.
-- Es instalable como PWA en Android y iPhone.
+1. Descomprime este ZIP.
+2. En el repositorio, reemplaza los archivos anteriores por **todo** el contenido de esta carpeta.
+3. Asegúrate de subir también `favicon-naciones-20261120.ico`, `favicon-naciones-20261120.svg` y la carpeta `assets` completa.
+4. `index.html` debe quedar en la raíz del repositorio, al mismo nivel que `app.js`, `styles.css`, `config.js` y `manifest.webmanifest`.
+5. Haz Commit changes y espera a que termine GitHub Pages.
+6. Abre la página con recarga forzada. En Chrome de escritorio usa `Ctrl + Shift + R`.
 
-## Subir a GitHub Pages
+## Logo superior
 
-1. Descomprime el ZIP.
-2. En GitHub abre el repositorio que ya creaste.
-3. Selecciona **Add file → Upload files**.
-4. Arrastra todo el contenido de esta carpeta a la raíz del repositorio. `index.html` debe quedar visible directamente en la raíz, no dentro de otra carpeta.
-5. Confirma con **Commit changes**.
-6. Verifica que GitHub Pages esté en **Settings → Pages → Deploy from a branch → main → /(root)**.
-7. Abre el sitio publicado en HTTPS.
+El símbolo blanco del encabezado está integrado como imagen embebida en `index.html` para que no dependa de que el archivo externo se haya subido correctamente. La carpeta `assets` conserva también `logo-mark-white.png` como recurso local.
 
-Esta versión cambia el identificador de caché y los parámetros de versión (`exacto-01`) para que el service worker no siga mostrando el diseño anterior.
+## Ícono de pestaña y acceso directo
 
-## Actualizar Apps Script
+Se incluyen un favicon ICO de varios tamaños, favicon SVG, PNG de 16 y 32 px y un icono Apple Touch de 180 px. El `manifest.webmanifest` apunta a los iconos de 192 y 512 px para Android/PWA. Se cambió el nombre y versión de los archivos para evitar reutilizar el favicon antiguo del navegador.
 
-Para que se devuelvan el nombre y el número de personas, reemplaza el contenido de `Code.gs` del proyecto asociado a la URL ya configurada por el archivo `apps-script/Code.gs` de este ZIP. Guarda y ve a **Implementar → Administrar implementaciones → Editar → Nueva versión → Implementar**. Conserva la URL `/exec` si Google no genera otra.
+**Nota:** los navegadores pueden conservar el favicon en caché. Si tras subir todo sigue apareciendo el icono anterior, cierra la pestaña y abre la URL en una pestaña nueva; en Android/iPhone elimina el acceso directo anterior y vuelve a instalar la PWA.
 
-La URL integrada en `config.js` es la implementación compartida por el usuario.
+## Configuración de Google Apps Script
 
-## Revisar datos de la hoja
+La URL proporcionada está configurada en `config.js`. No es necesario cambiarla salvo que se cree una nueva implementación de Apps Script.
 
-El backend localiza en la fila 1 el encabezado del número de registro; si no lo detecta, usa A como respaldo. Si el número de registro está en otra columna y el encabezado tiene otro nombre, ajusta `REGISTRATION_COLUMN` (A=1, B=2, etc.) en `apps-script/Code.gs`.
+## Funcionamiento
 
-El archivo de hoja no pudo verificarse desde esta sesión porque Google Sheets respondió que requiere autorización. Por ello la detección de nombre y personas usa los encabezados habituales listados arriba. Si los nombres de las columnas reales son distintos, habrá que agregar esos encabezados a la lista del script.
-
-## Instalar en teléfonos
-
-- Android: abre el sitio HTTPS en Chrome → menú → **Instalar aplicación**.
-- iPhone: abre el sitio HTTPS en Safari → **Compartir → Agregar a pantalla de inicio**.
-
-Al iniciar, pulsa `REGISTRAR ASISTENCIA` y concede permiso para usar la cámara. Durante la sesión escanea automáticamente y escribe en la hoja.
-
-## Seguridad
-
-La versión no utiliza PIN. El endpoint de Apps Script debe estar publicado para el acceso de los teléfonos; cualquier persona que tenga la URL pública podría intentar enviar datos. Comparte el enlace solo con el equipo correspondiente.
+- El botón azul activa/detiene la cámara.
+- El lector detecta códigos QR automáticamente.
+- Los registros se envían a la pestaña `G45` a través de Apps Script.
+- Las columnas destino son X (código de registro) y Y (fecha/hora), de acuerdo con el script incluido.

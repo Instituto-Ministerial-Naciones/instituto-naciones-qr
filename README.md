@@ -2,6 +2,10 @@
 
 Aplicación web instalable (PWA) para escanear códigos QR y registrar automáticamente el número de registro y la fecha/hora en la pestaña **G45** de Google Sheets.
 
+## Dirección de arte
+
+La interfaz sigue el moodboard compartido: papel crema con grano sutil, amarillo mostaza, azul cielo, negro y pequeños acentos terracota. Usa el logotipo negro del Instituto, tipografía geométrica de alto contraste y una pieza de collage editorial creada para esta aplicación. El área de cámara conserva alto contraste para facilitar el escaneo.
+
 ## Incluye
 
 - Escaneo continuo con la cámara trasera del teléfono.
@@ -11,6 +15,7 @@ Aplicación web instalable (PWA) para escanear códigos QR y registrar automáti
 - Evita sobrescribir un registro si la misma persona vuelve a escanear el mismo día.
 - Instalable en Android y iPhone desde el navegador.
 - URL de Apps Script ya cargada en `config.js`.
+- Iconos PWA adaptados a la nueva paleta gráfica.
 
 ## Importante: actualizar la implementación de Apps Script
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'naciones-qr-v2-sin-pin';
+const CACHE_NAME = 'naciones-qr-v3-moodboard';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,7 +6,8 @@ const APP_SHELL = [
   './config.js',
   './app.js',
   './manifest.webmanifest',
-  './assets/logo-instituto-blanco.png',
+  './assets/logo-instituto-negro.png',
+  './assets/collage-vision.webp',
   './assets/icon-192.png',
   './assets/icon-512.png'
 ];

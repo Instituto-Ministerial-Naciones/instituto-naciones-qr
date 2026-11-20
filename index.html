@@ -3,22 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#101114">
+  <meta name="theme-color" content="#f1ead5">
   <meta name="description" content="Lector QR de registro del Instituto Ministerial Naciones.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Naciones QR">
   <title>Registro QR | Instituto Naciones</title>
   <link rel="icon" type="image/png" href="assets/icon-192.png">
   <link rel="apple-touch-icon" href="assets/icon-192.png">
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <img class="brand-logo" src="assets/logo-instituto-blanco.png" alt="Instituto Ministerial Naciones">
+      <a class="brand-lockup" href="./" aria-label="Instituto Ministerial Naciones, inicio">
+        <img class="brand-logo" src="assets/logo-instituto-negro.png" alt="Instituto Ministerial Naciones">
+      </a>
       <div class="connection-pill" id="connection-pill">
         <span class="connection-dot"></span>
         <span id="connection-text">Preparando lector</span>
@@ -27,15 +32,23 @@
 
     <main class="main-content">
       <section class="intro">
-        <div class="eyebrow"><span class="eyebrow-line"></span> CONTROL DE REGISTRO</div>
-        <h1>Escanea.<br><span>Registra.</span></h1>
-        <p class="intro-copy">Coloca el código QR frente a la cámara.<br>No necesitas confirmar cada lectura; el registro se guarda automáticamente.</p>
+        <div class="intro-copy-block">
+          <div class="eyebrow"><span class="eyebrow-mark"></span> CONTROL DE REGISTRO <span class="eyebrow-number">/ 01</span></div>
+          <h1>Escanea.<br><span>Registra.</span></h1>
+          <p class="intro-copy">Acerca el código QR a la cámara.<br>La asistencia se guarda automáticamente.</p>
+          <div class="intro-caption"><span></span> INSTITUTO MINISTERIAL NACIONES</div>
+        </div>
+        <div class="hero-art-wrap" aria-hidden="true">
+          <div class="hero-art-backdrop"></div>
+          <img class="hero-collage" src="assets/collage-vision.webp" alt="">
+          <div class="hero-art-note">VISIÓN<br><b>ENFOQUE</b></div>
+        </div>
       </section>
 
       <section class="scanner-card" aria-label="Escáner de códigos QR">
         <div class="scanner-heading">
-          <div>
-            <div class="section-kicker">LECTOR ACTIVO</div>
+          <div class="scanner-title-group">
+            <div class="section-kicker"><span class="kicker-square"></span> LECTOR ACTIVO <span class="kicker-slash">/</span> G45</div>
             <h2>Escáner QR</h2>
           </div>
           <div class="live-indicator" id="live-indicator"><span></span> EN ESPERA</div>
@@ -44,22 +57,26 @@
         <div class="camera-frame" id="camera-frame">
           <div id="reader" class="reader"></div>
           <div class="camera-placeholder" id="camera-placeholder">
+            <div class="placeholder-sun"></div>
             <div class="camera-icon-wrap">
               <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 17V9h8M32 9h8v8M40 31v8h-8M16 39H8v-8"/><path d="M14 18h20v12H14zM19 23h10M19 27h6"/></svg>
             </div>
-            <strong>La cámara aparecerá aquí</strong>
-            <span>Al iniciar, cada QR se registrará automáticamente</span>
+            <strong>Prepara tu siguiente lectura</strong>
+            <span>Coloca el QR dentro del marco para registrar automáticamente.</span>
+            <div class="placeholder-caption">CAMERA / LIVE SCAN</div>
           </div>
           <div class="scan-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
           <div class="scan-line" id="scan-line" aria-hidden="true"></div>
+          <div class="camera-tag">QR · 01</div>
         </div>
 
         <div class="camera-actions" id="camera-actions">
           <button class="primary-button" id="start-button" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             <span>Activar cámara</span>
+            <span class="button-arrow" aria-hidden="true">↗</span>
           </button>
-          <p class="camera-hint">Usa la cámara trasera de tu teléfono</p>
+          <p class="camera-hint">Utiliza la cámara trasera de tu teléfono</p>
         </div>
 
         <div class="result-panel" id="result-panel" aria-live="polite">
@@ -85,6 +102,7 @@
           <span class="stat-label">ÚLTIMA HORA</span>
           <strong id="session-last-time">—</strong>
         </div>
+        <div class="session-stamp" aria-hidden="true">EN<br>ORDEN</div>
       </section>
 
       <div class="notice" id="notice" role="status">
@@ -95,11 +113,11 @@
 
     <footer class="footer">
       <span>INSTITUTO MINISTERIAL NACIONES</span>
-      <span class="footer-separator">•</span>
+      <span class="footer-separator">✳</span>
       <span>PLATAFORMA DE REGISTRO</span>
     </footer>
   </div>
-<script src="config.js"></script>
+  <script src="config.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
   <script src="app.js" defer></script>
 </body>
